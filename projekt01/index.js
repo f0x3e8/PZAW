@@ -2,7 +2,8 @@ import { createServer } from "node:http";
 import { readFileSync } from "node:fs";
 import { URL } from "node:url";
 
-const index_html = readFileSync("static/index.html");
+const index_html = readFileSync("index.html");
+const icon = readFileSync("favicon.ico");
 
 // Create a HTTP server
 const server = createServer((req, res) => {
@@ -20,13 +21,13 @@ const server = createServer((req, res) => {
     }
   }
 
-  if (path === "/hello") {
+  if (path === "/favicon.ico") {
     if (req.method !== "GET") {
       res.writeHead(405, { "Content-Type": "text/plain" });
       res.end("Method not allowed\n");
     } else {
-      res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end("hello world!\n");
+        res.writeHead(200, { "Content-Type": "image/vnd.microsoft.icon." });
+        res.end(icon);
     }
   }
 
