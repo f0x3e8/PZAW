@@ -1,0 +1,22 @@
+<%- include("head.partial.ejs") %>
+
+<main>
+<% if (favorites.length === 0) { %>
+  <p>Brak ulubionych</p>
+<% } else { %>
+  <ul>
+    <% favorites.forEach(recipe => { %>
+      <li>
+        <%= recipe.name %>
+        <form action="/favorites/<%= recipe.id %>/remove" method="POST" style="display:inline;">
+          <button type="submit">Usuń ulubiony</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
+
+  <a href="/recipes">← Powrót do kategorii</a>
+</main>
+
+<%- include("foot.partial.ejs") %>

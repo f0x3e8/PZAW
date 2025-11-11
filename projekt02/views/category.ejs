@@ -1,0 +1,32 @@
+<%- include("head.partial.ejs") %>
+
+<main>
+  <h1><%= title %></h1>
+  <ul id="recipes">
+    <% category.recipes.forEach(function(recipe){ %>
+      <li>
+        <b><%= recipe.name %></b><br />
+        <em>Składniki:</em> <%= recipe.ingredients %><br />
+        <em>Przygotowanie:</em> <%= recipe.instructions %>
+      </li>
+    <% }) %>
+  </ul>
+  <div>
+    <h3>Nowy przepis</h3>
+    <%- include("forms/new_recipe.ejs") %>
+  </div>
+
+  <ul>
+  <% category.recipes.forEach(recipe => { %>
+    <li>
+      <strong><%= recipe.name %></strong>
+      <form action="/recipes/<%= recipe.id %>/favorite" method="POST" style="display:inline;">
+      <button type="submit">Ulubione przepisy</button>
+</form>
+      </form>
+    </li>
+  <% }) %>
+</ul>
+</main>
+
+<%- include("foot.partial.ejs") %>

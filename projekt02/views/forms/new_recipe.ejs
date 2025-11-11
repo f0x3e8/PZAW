@@ -1,0 +1,17 @@
+<form action="/recipes/<%=category.id%>/new" method="POST">
+  <div>
+    <label for="recipe_name">Nazwa przepisu</label>
+    <input type="text" name="name" id="recipe_name"/>
+  </div>
+  <div>
+    <label for="ingredients">Składniki</label>
+    <textarea name="ingredients" id="ingredients"></textarea>
+  </div>
+  <div>
+    <label for="instructions">Przygotowanie</label>
+    <textarea name="instructions" id="instructions"></textarea>
+  </div>
+  <div>
+    <button>Dodaj przepis</button>
+  </div>
+</form>
