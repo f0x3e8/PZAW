@@ -1,0 +1,27 @@
+<%- include("head.partial.ejs") %>
+
+<main>
+  <h1><%= title %></h1>
+
+  <form action="/recipes/<%= recipe.id %>/edit" method="POST">
+    <div>
+      <label for="recipe_name">Nazwa przepisu</label>
+      <input type="text" name="name" id="recipe_name" value="<%= recipe.name %>" required />
+    </div>
+    <div>
+      <label for="ingredients">Składniki</label>
+      <textarea name="ingredients" id="ingredients" required><%= recipe.ingredients %></textarea>
+    </div>
+    <div>
+      <label for="instructions">Przygotowanie</label>
+      <textarea name="instructions" id="instructions" required><%= recipe.instructions %></textarea>
+    </div>
+    <div>
+      <button type="submit">Zapisz zmiany</button>
+    </div>
+  </form>
+
+  <a href="/recipes/<%= recipe.category_id %>">← Powrót do kategorii</a>
+</main>
+
+<%- include("foot.partial.ejs") %>

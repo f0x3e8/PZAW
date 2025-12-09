@@ -1,0 +1,35 @@
+<%- include("head.partial.ejs") %>
+
+<main>
+  <h1><%= title %></h1>
+
+  <ul>
+    <% category.recipes.forEach(recipe => { %>
+      <li>
+        <strong><%= recipe.name %></strong><br />
+        <em>Składniki:</em> <%= recipe.ingredients %><br />
+        <em>Przygotowanie:</em> <%= recipe.instructions %><br />
+
+        <form action="/recipes/<%= recipe.id %>/favorite" method="POST" style="display:inline;">
+          <button type="submit">Ulubione przepisy</button>
+        </form>
+
+        <form action="/recipes/<%= recipe.id %>/remove" method="POST" style="display:inline;">
+          <button type="submit" onclick="return confirm('Czy na pewno chcesz usunąć ten przepis?')">Usuń przepis</button>
+        </form>
+
+        <form action="/recipes/<%= recipe.id %>/edit" method="GET" style="display:inline;">
+        <button type="submit">Edytuj przepis</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+
+  <div>
+    <h3>Nowy przepis</h3>
+    <%- include("forms/new_recipe.ejs") %>
+  </div>
+
+</main>
+
+<%- include("foot.partial.ejs") %>
