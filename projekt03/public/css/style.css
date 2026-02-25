@@ -1,0 +1,128 @@
+/* CZAT */
+
+/* --- Reset i ogólne ustawienia --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff5e6;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+main {
+    background-color: #fff;
+    width: 80%;
+    max-width: 900px;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+/* --- Nagłówki --- */
+h1 {
+    margin-bottom: 1rem;
+    color: #d35400;
+    text-align: center;
+}
+
+h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #e67e22;
+}
+
+/* --- Listy kategorii i przepisów --- */
+ul {
+    list-style: none;
+    margin: 1rem 0;
+}
+
+li {
+    margin-bottom: 0.8rem;
+}
+
+/* --- Linki kategorii --- */
+a {
+    text-decoration: none;
+    color: #2980b9;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* --- Formularze i przyciski --- */
+form {
+    display: inline-block;
+    margin-left: 1rem;
+}
+
+button {
+    background-color: #e67e22;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #d35400;
+}
+
+/* --- Pola formularza --- */
+input[type="text"], textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.8rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* --- Błędy walidacji --- */
+ul#error-list, ul#errors {
+    list-style: none;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    background-color: #fdd;
+    color: #c0392b;
+    border-radius: 5px;
+}
+
+/* --- Link powrotu --- */
+a.back-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #2980b9;
+}
+
+a.back-link:hover {
+    text-decoration: underline;
+}
+
+/* --- Ulubione przepisy na liście --- */
+ul#favorites li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+
+/* --- Responsywność --- */
+@media (max-width: 600px) {
+    main {
+        width: 95%;
+        padding: 1rem;
+    }
+}
