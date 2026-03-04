@@ -85,7 +85,7 @@ export function getFavorites() {
 }
 
 export function getRecipe(id) {
-  return db.prepare("SELECT * FROM recipes WHERE id = ?").get(id);
+  return db.prepare("SELECT recipes.*, recipe_categories.id as category_name FROM recipes LEFT JOIN recipe_categories ON recipes.category_id = recipe_categories.category_id WHERE recipes.id = ?").get(id);
 }
 
 export function updateRecipe(id, data) {

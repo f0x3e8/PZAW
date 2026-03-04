@@ -66,21 +66,13 @@ app.post("/favorites/:id/remove", (req, res) => {
 app.post("/recipes/:id/remove", (req, res) => {
   const recipeId = parseInt(req.params.id);
 
-  let categoryId = null;
-  for (const [cid, category] of Object.entries(recipe_categories)) {
-    if (category.recipes.find(r => r.id === recipeId)) {
-      categoryId = cid;
-      break;
-    }
-  }
+  const recipe = getRecipe(recipeId);
+
 
   removeRecipe(recipeId);
 
-  if (categoryId) {
-    res.redirect(`/recipes/${categoryId}`);
-  } else {
-    res.redirect("/recipes");
-  }
+  res.redirect(`/recipes/${recipe.category_name}`);
+
 });
 
 app.get("/reset-db", (req, res) => {
@@ -104,8 +96,9 @@ app.post("/recipes/:id/edit", (req, res) => {
 
   updateRecipe(recipeId, { name, ingredients, instructions });
 
+
   const recipe = getRecipe(recipeId);
-  res.redirect(`/recipes/${recipe.category_id}`);
+  res.redirect(`/recipes/${recipe.category_name}`);
 });
 
 app.listen(port, () => {
