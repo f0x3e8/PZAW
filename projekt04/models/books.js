@@ -19,11 +19,12 @@ CREATE TABLE IF NOT EXISTS books (
 ) STRICT;
 `);
 
-const existingGenres = db.prepare("SELECT COUNT(*) as cnt FROM genres").get();
-if (existingGenres.cnt === 0) {
-    db.prepare("INSERT INTO genres (id, name) VALUES (?, ?)").run("fantastyka", "Fantastyka");
-    db.prepare("INSERT INTO genres (id, name) VALUES (?, ?)").run("romans", "Romans");
-}
+const insertGenre = db.prepare("INSERT OR IGNORE INTO genres (id, name) VALUES (?, ?)");
+insertGenre.run("fantastyka", "Fantastyka");
+insertGenre.run("romans", "Romans");
+insertGenre.run("klasyka", "Klasyka");
+insertGenre.run("science-fiction", "Science Fiction");
+insertGenre.run("kryminal", "Kryminał");
 
 export let favorites = [];
 
