@@ -1,0 +1,22 @@
+<%- include("head.partial.ejs") %>
+
+<main>
+<% if (favorites.length === 0) { %>
+  <p>Brak ulubionych</p>
+<% } else { %>
+  <ul>
+    <% favorites.forEach(book => { %>
+      <li>
+        <%= book.title %>
+        <form action="/favorites/<%= book.id %>/remove" method="POST" style="display:inline;">
+          <button type="submit">Usuń ulubioną</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
+
+  <a href="/">← Powrót do menu</a>
+</main>
+
+<%- include("foot.partial.ejs") %>

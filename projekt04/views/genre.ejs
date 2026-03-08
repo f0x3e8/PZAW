@@ -1,0 +1,35 @@
+<%- include("head.partial.ejs") %>
+
+<main>
+  <h1><%= title %></h1>
+
+  <ul>
+    <% genre.books.forEach(book => { %>
+      <li>
+        <strong><%= book.title %></strong><br />
+        <em>Autor:</em> <%= book.author %><br />
+        <em>Opis:</em> <%= book.description %><br />
+
+        <form action="/books/<%= book.id %>/favorite" method="POST" style="display:inline;">
+          <button type="submit">Ulubione książki</button>
+        </form>
+
+        <form action="/books/<%= book.id %>/remove" method="POST" style="display:inline;">
+          <button type="submit" onclick="return confirm('Czy na pewno chcesz usunąć tę książkę?')">Usuń książkę</button>
+        </form>
+
+        <form action="/books/<%= book.id %>/edit" method="GET" style="display:inline;">
+          <button type="submit">Edytuj książkę</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+
+  <div>
+    <h3>Nowa książka</h3>
+    <%- include("forms/new_book.ejs") %>
+  </div>
+  <a href="/books">← Powrót do gatunków</a>
+</main>
+
+<%- include("foot.partial.ejs") %>

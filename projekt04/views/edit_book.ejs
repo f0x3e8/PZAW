@@ -1,0 +1,27 @@
+<%- include("head.partial.ejs") %>
+
+<main>
+  <h1><%= title %></h1>
+
+  <form action="/books/<%= book.id %>/edit" method="POST">
+    <div>
+      <label for="book_title">Tytuł książki</label>
+      <input type="text" name="title" id="book_title" value="<%= book.title %>" required />
+    </div>
+    <div>
+      <label for="author">Autor</label>
+      <input type="text" name="author" id="author" value="<%= book.author %>" required />
+    </div>
+    <div>
+      <label for="description">Opis</label>
+      <textarea name="description" id="description" required><%= book.description %></textarea>
+    </div>
+    <div>
+      <button type="submit">Zapisz zmiany</button>
+    </div>
+  </form>
+
+  <a href="/books">← Powrót do gatunków</a>
+</main>
+
+<%- include("foot.partial.ejs") %>
