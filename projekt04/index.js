@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 import books, { addToFavorites, getFavorites, removeFromFavorites, removeBook, getBook, updateBook } from "./models/books.js";
 
 const port = 8000;
@@ -8,6 +9,7 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(morgan("dev"));
 
 app.use((req, res, next) => {
