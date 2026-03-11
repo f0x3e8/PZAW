@@ -1,0 +1,18 @@
+<%- include("head.partial.ejs") %>
+
+<main>
+  <h1>Rejestracja</h1>
+  <% if (error) { %>
+    <p class="auth-error"><%= error %></p>
+  <% } %>
+  <form action="/register" method="POST" class="auth-form">
+    <label for="username">Nazwa użytkownika</label>
+    <input type="text" id="username" name="username" required />
+    <label for="password">Hasło</label>
+    <input type="password" id="password" name="password" required />
+    <button type="submit">Zarejestruj się</button>
+  </form>
+  <p class="auth-switch">Masz już konto? <a href="/login">Zaloguj się</a></p>
+</main>
+
+<%- include("foot.partial.ejs") %>

@@ -7,3 +7,17 @@
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
+  <nav class="navbar">
+    <span class="navbar-brand">Biblioteka</span>
+    <div class="navbar-auth">
+      <% if (user) { %>
+        <span class="navbar-user">Zalogowany: <strong><%= user %></strong></span>
+        <form action="/logout" method="POST" style="display:inline">
+          <button type="submit" class="btn-logout">Wyloguj</button>
+        </form>
+      <% } else { %>
+        <a href="/login" class="btn-nav">Zaloguj się</a>
+        <a href="/register" class="btn-nav btn-register">Zarejestruj się</a>
+      <% } %>
+    </div>
+  </nav>

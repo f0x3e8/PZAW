@@ -1,3 +1,106 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #d35400;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 2rem;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.navbar-brand {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+}
+
+.navbar-auth {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.navbar-user {
+    font-size: 0.9rem;
+    color: #ffe0c0;
+}
+
+.btn-nav {
+    background-color: white;
+    color: #d35400;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.btn-nav:hover {
+    background-color: #ffe0c0;
+    text-decoration: none;
+}
+
+.btn-register {
+    background-color: #e67e22;
+    color: white;
+}
+
+.btn-register:hover {
+    background-color: #f39c12;
+}
+
+.btn-logout {
+    background-color: #c0392b;
+    font-size: 0.85rem;
+    padding: 0.3rem 0.8rem;
+}
+
+.btn-logout:hover {
+    background-color: #922b21;
+}
+
+/* --- Formularze auth --- */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 360px;
+    margin: 1.5rem auto;
+}
+
+.auth-form label {
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+}
+
+.auth-form input {
+    margin-bottom: 1rem;
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 1rem;
+}
+
+.auth-error {
+    background-color: #fdd;
+    color: #c0392b;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 1rem;
+}
+
 /* CZAT */
 
 /* --- Reset i ogólne ustawienia --- */
@@ -13,7 +116,7 @@ body {
     color: #333;
     display: flex;
     justify-content: center;
-    padding: 2rem 0;
+    padding: 5rem 0 2rem;
 }
 
 main {
