@@ -1,8 +1,16 @@
 import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import argon2 from "argon2";
 import books, { addToFavorites, getFavorites, removeFromFavorites, removeBook, getBook, updateBook } from "./models/books.js";
 import db from "./db.js";
+
+const PEPPER = process.env.PEPPER;
+//polecone przez chat
+if (!PEPPER) {
+    console.error("Brak zmiennej środowiskowej PEPPER! Uruchom serwer przez: npm start");
+    process.exit(1);
+}
 
 const port = 8000;
 const app = express();
@@ -97,7 +105,7 @@ app.get("/register", (req, res) => {
     res.render("register", { title: "Rejestracja", error: null, user: getLoggedUser(req) });
 });
 
-app.post("/register", (req, res) => {
+app.post("/register", async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
         return res.render("register", { title: "Rejestracja", error: "Podaj nazwę użytkownika i hasło", user: getLoggedUser(req) });
@@ -106,9 +114,15 @@ app.post("/register", (req, res) => {
     if (existing) {
         return res.render("register", { title: "Rejestracja", error: "Użytkownik o tej nazwie już istnieje", user: getLoggedUser(req) });
     }
-    db.prepare("INSERT INTO users (username, password) VALUES (?, ?)").run(username, password);
-    res.cookie("username", username, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
-    res.redirect("/");
+    try {
+        const hash = await argon2.hash(password + PEPPER);
+        db.prepare("INSERT INTO users (username, password) VALUES (?, ?)").run(username, hash);
+        res.cookie("username", username, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+        res.redirect("/");
+    } catch (err) {
+        console.error("Błąd haszowania hasła:", err);
+        res.render("register", { title: "Rejestracja", error: "Błąd serwera, spróbuj ponownie", user: getLoggedUser(req) });
+    }
 });
 
 // logowanie
@@ -116,14 +130,20 @@ app.get("/login", (req, res) => {
     res.render("login", { title: "Logowanie", error: null, user: getLoggedUser(req) });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
     const { username, password } = req.body;
-    const user = db.prepare("SELECT id FROM users WHERE username = ? AND password = ?").get(username, password);
-    if (!user) {
-        return res.render("login", { title: "Logowanie", error: "Nieprawidłowa nazwa użytkownika lub hasło", user: getLoggedUser(req) });
+    const user = db.prepare("SELECT id, password FROM users WHERE username = ?").get(username);
+    try {
+        const valid = user && await argon2.verify(user.password, password + PEPPER);
+        if (!valid) {
+            return res.render("login", { title: "Logowanie", error: "Nieprawidłowa nazwa użytkownika lub hasło", user: getLoggedUser(req) });
+        }
+        res.cookie("username", username, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+        res.redirect("/");
+    } catch (err) {
+        console.error("Błąd weryfikacji hasła:", err);
+        res.render("login", { title: "Logowanie", error: "Błąd serwera, spróbuj ponownie", user: getLoggedUser(req) });
     }
-    res.cookie("username", username, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
-    res.redirect("/");
 });
 
 // Wylogowanie
