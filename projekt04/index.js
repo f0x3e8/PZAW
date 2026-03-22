@@ -30,6 +30,13 @@ function getLoggedUser(req) {
     return req.cookies.username || null;
 }
 
+function requireAuth(req, res, next) {
+    if (!getLoggedUser(req)) {
+        return res.redirect("/login");
+    }
+    next();
+}
+
 app.get("/", (req, res) => {
     res.render("index", { title: "Strona główna", user: getLoggedUser(req) });
 });
@@ -45,7 +52,7 @@ app.get("/books/:genre_id", (req, res) => {
     res.render("genre", { title: genre.name, genre, user: getLoggedUser(req) });
 });
 
-app.post("/books/:genre_id/new", (req, res) => {
+app.post("/books/:genre_id/new", requireAuth, (req, res) => {
     const genreId = req.params.genre_id;
     if (!books.hasGenre(genreId)) return res.sendStatus(404);
 
@@ -64,17 +71,17 @@ app.post("/books/:genre_id/new", (req, res) => {
     }
 });
 
-app.post("/books/:id/favorite", (req, res) => {
-    addToFavorites(req.params.id);
+app.post("/books/:id/favorite", requireAuth, (req, res) => {
+    addToFavorites(req.params.id, getLoggedUser(req));
     res.redirect("/favorites");
 });
 
-app.get("/favorites", (req, res) => {
-    res.render("favorites", { title: "Ulubione książki", favorites: getFavorites(), user: getLoggedUser(req) });
+app.get("/favorites", requireAuth, (req, res) => {
+    res.render("favorites", { title: "Ulubione książki", favorites: getFavorites(getLoggedUser(req)), user: getLoggedUser(req) });
 });
 
-app.post("/favorites/:id/remove", (req, res) => {
-    removeFromFavorites(req.params.id);
+app.post("/favorites/:id/remove", requireAuth, (req, res) => {
+    removeFromFavorites(req.params.id, getLoggedUser(req));
     res.redirect("/favorites");
 });
 

@@ -1,4 +1,5 @@
 import { DatabaseSync } from "node:sqlite";
+import usersDb from "../db.js";
 
 const db_path = "./db.sqlite";
 const db = new DatabaseSync(db_path);
@@ -17,6 +18,7 @@ CREATE TABLE IF NOT EXISTS books (
     author        TEXT NOT NULL,
     description   TEXT NOT NULL
 ) STRICT;
+
 `);
 
 const insertGenre = db.prepare("INSERT OR IGNORE INTO genres (id, name) VALUES (?, ?)");
@@ -25,8 +27,6 @@ insertGenre.run("romans", "Romans");
 insertGenre.run("klasyka", "Klasyka");
 insertGenre.run("science-fiction", "Science Fiction");
 insertGenre.run("kryminal", "Kryminał");
-
-export let favorites = [];
 
 export function getGenreSummaries() {
     return db.prepare("SELECT id, name FROM genres").all();
@@ -70,19 +70,20 @@ export function removeBook(id) {
     db.prepare("DELETE FROM books WHERE id = ?").run(id);
 }
 
-export function addToFavorites(id) {
-    const book = db.prepare("SELECT * FROM books WHERE id = ?").get(id);
-    if (book && !favorites.find(b => b.id === book.id)) {
-        favorites.push(book);
-    }
+export function addToFavorites(id, username) {
+    usersDb.prepare("INSERT OR IGNORE INTO favorites (username, book_id) VALUES (?, ?)").run(username, parseInt(id));
 }
 
-export function removeFromFavorites(id) {
-    favorites = favorites.filter(b => b.id !== parseInt(id));
+export function removeFromFavorites(id, username) {
+    usersDb.prepare("DELETE FROM favorites WHERE username = ? AND book_id = ?").run(username, parseInt(id));
 }
 
-export function getFavorites() {
-    return favorites;
+export function getFavorites(username) {
+    const favRows = usersDb.prepare("SELECT book_id FROM favorites WHERE username = ?").all(username);
+    if (favRows.length === 0) return [];
+    const ids = favRows.map(r => r.book_id);
+    const placeholders = ids.map(() => "?").join(",");
+    return db.prepare(`SELECT * FROM books WHERE id IN (${placeholders})`).all(...ids);
 }
 
 export function getBook(id) {
@@ -105,5 +106,7 @@ export default {
     addToFavorites,
     getFavorites,
     removeFromFavorites,
-    removeBook
+    removeBook,
+    getBook,
+    updateBook
 };

@@ -10,6 +10,7 @@
         <em>Autor:</em> <%= book.author %><br />
         <em>Opis:</em> <%= book.description %><br />
 
+        <% if (user) { %>
         <form action="/books/<%= book.id %>/favorite" method="POST" style="display:inline;">
           <button type="submit">Ulubione książki</button>
         </form>
@@ -21,14 +22,19 @@
         <form action="/books/<%= book.id %>/edit" method="GET" style="display:inline;">
           <button type="submit">Edytuj książkę</button>
         </form>
+        <% } %>
       </li>
     <% }) %>
   </ul>
 
+  <% if (user) { %>
   <div>
     <h3>Nowa książka</h3>
     <%- include("forms/new_book.ejs") %>
   </div>
+  <% } else { %>
+  <p><a href="/login">Zaloguj się</a>, aby dodawać książki.</p>
+  <% } %>
   <a href="/books">← Powrót do gatunków</a>
 </main>
 
