@@ -16,10 +16,16 @@ CREATE TABLE IF NOT EXISTS books (
     genre_id      INTEGER NOT NULL REFERENCES genres(genre_id) ON DELETE CASCADE,
     title         TEXT NOT NULL,
     author        TEXT NOT NULL,
-    description   TEXT NOT NULL
+    description   TEXT NOT NULL,
+    added_by      TEXT
 ) STRICT;
 
 `);
+
+try {
+    db.exec("ALTER TABLE books ADD COLUMN added_by TEXT");
+} catch (_) {
+}
 
 const insertGenre = db.prepare("INSERT OR IGNORE INTO genres (id, name) VALUES (?, ?)");
 insertGenre.run("fantastyka", "Fantastyka");
@@ -44,14 +50,14 @@ export function getGenre(genreId) {
     return { id: genre.id, name: genre.name, books };
 }
 
-export function addBook(genreId, book) {
+export function addBook(genreId, book, username) {
     const genre = db.prepare("SELECT * FROM genres WHERE id = ?").get(genreId);
     if (!genre) return false;
 
     const stmt = db.prepare(
-        "INSERT INTO books (genre_id, title, author, description) VALUES (?, ?, ?, ?)"
+        "INSERT INTO books (genre_id, title, author, description, added_by) VALUES (?, ?, ?, ?, ?)"
     );
-    stmt.run(genre.genre_id, book.title, book.author, book.description);
+    stmt.run(genre.genre_id, book.title, book.author, book.description, username || null);
     return true;
 }
 

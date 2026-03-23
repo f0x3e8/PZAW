@@ -30,12 +30,29 @@ function getLoggedUser(req) {
     return req.cookies.username || null;
 }
 
+function isAdmin(username) {
+    if (!username) return false;
+    const user = db.prepare("SELECT is_admin FROM users WHERE username = ?").get(username);
+    return !!(user && user.is_admin);
+}
+
 function requireAuth(req, res, next) {
     if (!getLoggedUser(req)) {
         return res.redirect("/login");
     }
     next();
 }
+
+(async () => {
+    const existing = db.prepare("SELECT id FROM users WHERE username = 'admin'").get();
+    if (!existing) {
+        const hash = await argon2.hash("admin" + PEPPER);
+        db.prepare("INSERT INTO users (username, password, is_admin) VALUES (?, ?, 1)").run("admin", hash);
+        console.log("admin login: admin haslo: admin)");
+    } else {
+        db.prepare("UPDATE users SET is_admin = 1 WHERE username = 'admin'").run();
+    }
+})();
 
 app.get("/", (req, res) => {
     res.render("index", { title: "Strona główna", user: getLoggedUser(req) });
@@ -49,7 +66,8 @@ app.get("/books", (req, res) => {
 app.get("/books/:genre_id", (req, res) => {
     const genre = books.getGenre(req.params.genre_id);
     if (!genre) return res.sendStatus(404);
-    res.render("genre", { title: genre.name, genre, user: getLoggedUser(req) });
+    const user = getLoggedUser(req);
+    res.render("genre", { title: genre.name, genre, user, userIsAdmin: isAdmin(user) });
 });
 
 app.post("/books/:genre_id/new", requireAuth, (req, res) => {
@@ -66,7 +84,7 @@ app.post("/books/:genre_id/new", requireAuth, (req, res) => {
     if (errors.length) {
         res.status(400).render("new_book", { title: "Nowa książka", errors, user: getLoggedUser(req) });
     } else {
-        books.addBook(genreId, bookData);
+        books.addBook(genreId, bookData, getLoggedUser(req));
         res.redirect(`/books/${genreId}`);
     }
 });
@@ -85,26 +103,34 @@ app.post("/favorites/:id/remove", requireAuth, (req, res) => {
     res.redirect("/favorites");
 });
 
-app.post("/books/:id/remove", (req, res) => {
+app.post("/books/:id/remove", requireAuth, (req, res) => {
     const bookId = parseInt(req.params.id);
     const book = getBook(bookId);
+    if (!book) return res.sendStatus(404);
+    const user = getLoggedUser(req);
+    if (!isAdmin(user) && book.added_by !== user) return res.sendStatus(403);
     removeBook(bookId);
     res.redirect(`/books/${book.genre_name}`);
 });
 
-app.get("/books/:id/edit", (req, res) => {
+app.get("/books/:id/edit", requireAuth, (req, res) => {
     const bookId = parseInt(req.params.id);
     const book = getBook(bookId);
     if (!book) return res.sendStatus(404);
-    res.render("edit_book", { title: `Edytuj: ${book.title}`, book, user: getLoggedUser(req) });
+    const user = getLoggedUser(req);
+    if (!isAdmin(user) && book.added_by !== user) return res.sendStatus(403);
+    res.render("edit_book", { title: `Edytuj: ${book.title}`, book, user });
 });
 
-app.post("/books/:id/edit", (req, res) => {
+app.post("/books/:id/edit", requireAuth, (req, res) => {
     const bookId = parseInt(req.params.id);
+    const book = getBook(bookId);
+    if (!book) return res.sendStatus(404);
+    const user = getLoggedUser(req);
+    if (!isAdmin(user) && book.added_by !== user) return res.sendStatus(403);
     const { title, author, description } = req.body;
     updateBook(bookId, { title, author, description });
-    const book = getBook(bookId);
-    res.redirect(`/books/${book.genre_name}`);
+    res.redirect(`/books/${getBook(bookId).genre_name}`);
 });
 
 // register

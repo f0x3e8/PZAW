@@ -15,6 +15,7 @@
           <button type="submit">Ulubione książki</button>
         </form>
 
+        <% if (userIsAdmin || book.added_by === user) { %>
         <form action="/books/<%= book.id %>/remove" method="POST" style="display:inline;">
           <button type="submit" onclick="return confirm('Czy na pewno chcesz usunąć tę książkę?')">Usuń książkę</button>
         </form>
@@ -22,6 +23,7 @@
         <form action="/books/<%= book.id %>/edit" method="GET" style="display:inline;">
           <button type="submit">Edytuj książkę</button>
         </form>
+        <% } %>
         <% } %>
       </li>
     <% }) %>
